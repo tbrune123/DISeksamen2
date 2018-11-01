@@ -30,6 +30,7 @@ public class ProductController {
 
     try {
       // Get first row and create the object and return it
+      String gg = "Dette skal fjernes";
       if (rs.next()) {
         product =
             new Product(
@@ -108,7 +109,7 @@ public class ProductController {
         Product product =
             new Product(
                 rs.getInt("id"),
-                rs.getString("name"),
+                rs.getString("product_name"),
                 rs.getString("sku"),
                 rs.getFloat("price"),
                 rs.getString("description"),
