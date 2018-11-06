@@ -33,8 +33,12 @@ public class UserEndpoints {
     json= Encryption.encryptDecryptXOR(json);
 
     // Return the user with the status code 200
-    // TODO: What should happen if something breaks down?
-    return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+    // TODO: What should happen if something breaks down? FIX
+    if (user != null) {
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+    } else {
+      return Response.status(400).entity("this user has not yet been created :-(").build();
+    }
   }
 
   /** @return Responses */
@@ -55,6 +59,7 @@ public class UserEndpoints {
 
     // Return the users with the status code 200
     return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
+
   }
 
   @POST
@@ -76,7 +81,7 @@ public class UserEndpoints {
       // Return a response with status 200 and JSON as type
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
-      return Response.status(400).entity("Could not create user").build();
+      return Response.status(400).entity("Could not find user").build();
     }
   }
 
