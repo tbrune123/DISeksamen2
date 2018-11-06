@@ -15,6 +15,7 @@ import utils.Log;
 public class UserEndpoints {
 
   private static UserCache userCache = new UserCache();
+  public static boolean forceUpdate=true;
 
   /**
    * @param idUser
@@ -50,12 +51,14 @@ public class UserEndpoints {
     Log.writeLog(this.getClass().getName(), this, "Get all users", 0);
 
     // Get a list of users
-    ArrayList<User> users = userCache.getUsers(false);
+    ArrayList<User> users = userCache.getUsers(forceUpdate);
 
     // TODO: Add Encryption to JSON FIX
     // Transfer users to json in order to return it to the user
     String json = new Gson().toJson(users);
     json= Encryption.encryptDecryptXOR(json);
+
+    this.forceUpdate = true;
 
     // Return the users with the status code 200
     return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
@@ -148,6 +151,9 @@ public class UserEndpoints {
       // Return the data to the user
       if (updatedUser != null) {
         // Return a response with status 200 and JSON as type
+
+        this.forceUpdate = true;
+        
         return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
       } else {
         return Response.status(400).entity("Could not update user").build();
