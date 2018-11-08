@@ -9,7 +9,7 @@ public final class Encryption {
 
       // The key is predefined and hidden in code
       // TODO: Create a more complex code and store it somewhere better
-      char[] key = {'C', 'B', 'S'};
+      char[] key = {'C', 'B', 'S', 'K', 'A', 'N', 'O', 'F', 'T', 'E', 'V', 'Æ', 'R', 'E', 'N', 'O', 'G', 'E', 'T', 'L', 'O', 'R', 'T'};
 
       // Stringbuilder enables you to play around with strings and make useful stuff
       StringBuilder thisIsEncrypted = new StringBuilder();

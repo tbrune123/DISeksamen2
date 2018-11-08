@@ -144,6 +144,8 @@ public class UserController {
       dbCon = new DatabaseController();
     }
 
+    user.setPassword(Hashing.sha(user.getPassword()));
+
     dbCon.update(user);
 
 

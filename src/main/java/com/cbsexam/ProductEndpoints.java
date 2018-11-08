@@ -34,6 +34,7 @@ public class ProductEndpoints {
     // TODO: Add Encryption to JSON FIX
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(product);
+    //added encryption
     json= Encryption.encryptDecryptXOR(json);
 
     // Return a response with status 200 and JSON as type
@@ -51,6 +52,7 @@ public class ProductEndpoints {
     // TODO: Add Encryption to JSON FIX
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(products);
+    //added encryption
     json= Encryption.encryptDecryptXOR(json);
 
     this.forceUpdate = false;
