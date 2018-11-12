@@ -16,6 +16,7 @@ public class UserEndpoints {
 
   private static UserCache userCache = new UserCache();
   public static boolean forceUpdate=true;
+  private static User currentUser = new User();
 
   /**
    * @param idUser
@@ -101,7 +102,10 @@ public class UserEndpoints {
 
     String json = new Gson().toJson(TheuserLogin);
 
+
+
     if (TheuserLogin != null) {
+      currentUser = TheuserLogin;
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
 
     } else {
@@ -117,7 +121,7 @@ public class UserEndpoints {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response deleteUser(@PathParam("idUser") int idUser) {
 
-    
+    if (currentUser.getToken() != null && currentUser.getId()==idUser)  {
 
     // Write to log that we are here
     Log.writeLog(this.getClass().getName(), this, "Deleting a user", 0);
@@ -134,6 +138,9 @@ public class UserEndpoints {
     }else {
       // Return a response with status 200 and JSON as type
       return Response.status(400).entity("Could not delete user").build();
+    }
+  } else {
+      return Response.status(400).entity("The user is not logged on").build();
     }
   }
   //public Response deleteUser(String x) {
