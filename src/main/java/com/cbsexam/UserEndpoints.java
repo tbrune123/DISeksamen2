@@ -161,6 +161,10 @@ public class UserEndpoints {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateUser(@PathParam("idUser") int idUser, String body) {
 
+    if (currentUser.getId()==idUser) {
+
+
+
       // Read the json from body and transfer it to a user class
       User changeUser = new Gson().fromJson(body, User.class);
 
@@ -180,5 +184,8 @@ public class UserEndpoints {
       } else {
         return Response.status(400).entity("Could not update user").build();
       }
+    } else {
+      return Response.status(400).entity("The user is not logged on").build();
+    }
     }
 }
