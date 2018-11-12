@@ -1,11 +1,13 @@
 package controllers;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import model.User;
 import utils.Hashing;
 import utils.Log;
+import utils.Token;
 
 public class UserController {
 
@@ -109,7 +111,7 @@ public class UserController {
 
     user.setPassword(Hashing.sha(user.getPassword()));
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it.
+    // TODO: Hash the user password before saving it. FIX
     int userID = dbCon.insert(
         "INSERT INTO user(first_name, last_name, password, email, created_at) VALUES('"
             + user.getFirstname()
@@ -170,7 +172,55 @@ public class UserController {
       return false;
     }
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it.
+    // TODO: Hash the user password before saving it. FIX
   }
+
+
+  public static User login(User user){
+
+    if (dbCon == null) {
+      dbCon = new DatabaseController();
+    }
+
+
+    user.setPassword(Hashing.sha(user.getPassword()));
+
+    try {
+      String sql = "SELECT * FROM user WHERE email = ? AND password = ?";
+
+      PreparedStatement preparedStatement = dbCon.getConnection().prepareStatement(sql);
+      preparedStatement.setString(1, user.getEmail());
+      preparedStatement.setString(2, user.getPassword());
+
+      ResultSet rs = preparedStatement.executeQuery();
+
+      if (rs.next()) {
+        user =
+                new User (
+                        rs.getInt("id"),
+                        rs.getString("first_name"),
+                        rs.getString("last_name"),
+                        rs.getString("password"),
+                        rs.getString("email"));
+
+
+                        user.setToken(Token.CreateToken());
+
+
+        System.out.println("Logged on");
+        return user;
+
+      } else {
+        System.out.println("no such user found");
+      }
+
+
+    } catch (SQLException e) {
+      System.out.println(e.getMessage());
+    }
+
+    return null;
+
+    }
 
 }
