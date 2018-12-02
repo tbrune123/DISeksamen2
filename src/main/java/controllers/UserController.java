@@ -12,6 +12,7 @@ import utils.Token;
 public class UserController {
 
   private static DatabaseController dbCon;
+  private static User currentUser = new User();
 
   public UserController() {
     dbCon = new DatabaseController();
@@ -205,6 +206,8 @@ public class UserController {
 
 
                         user.setToken(Token.CreateToken());
+
+                        currentUser = user;
 
 
         System.out.println("Logged on");
