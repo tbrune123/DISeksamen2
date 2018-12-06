@@ -137,22 +137,27 @@ public class UserController {
     // Return user
     return user;
   }
-  public static User updateUser(User user){
+  public static boolean updateUser(User user) {
 
-    // Write in log that we've reach this step
     Log.writeLog(UserController.class.getName(), user, "Actually updating a user in DB", 0);
 
-    // Check for DB Connection
     if (dbCon == null) {
       dbCon = new DatabaseController();
     }
 
     user.setPassword(Hashing.sha(user.getPassword()));
 
-    dbCon.update(user);
+    //DETTE SKAL LIGE FIKSES!!!!!!!!!!!!!
 
+    boolean affected = dbCon.update(
+            "UPDATE user SET " +
+                    "first_name = " + "'" + user.getFirstname() + "'," +
+                    "last_name = " + "'" + user.getLastname() + "'," +
+                    "password = " + "'" + user.getPassword() + "'," +
+                    "email = " + "'" + user.getEmail() + "'" +
+                    "WHERE u_id = " + "'" + user.getId() + "'");
 
-    return user;
+    return affected;
   }
 
   public static boolean deleteUser(int idUser) {
@@ -205,9 +210,8 @@ public class UserController {
                         rs.getString("email"));
 
 
-                        user.setToken(Token.CreateToken());
-
-                        currentUser = user;
+                        user.setToken(Token.CreateToken(user));
+                        
 
 
         System.out.println("Logged on");

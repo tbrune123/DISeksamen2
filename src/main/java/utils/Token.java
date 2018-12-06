@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import model.User;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -13,50 +14,49 @@ import java.util.Date;
 public final class Token {
 
 
-    private static Date expirationDate() {
-        Calendar c = Calendar.getInstance();
-        Date now = c.getTime();
-        c.add(Calendar.MINUTE, 10);
-        Date expirationDate = c.getTime();
+    private String token;
 
-        return expirationDate;
+    public Token(String token) {
+        this.token = token;
     }
 
 
-    public static String CreateToken() {
-
+    public static String CreateToken (User user) {
 
         try {
+            /**Den der secret skal gemmes et andet sted**/
             Algorithm algorithm = Algorithm.HMAC256("secret");
             String token = JWT.create()
                     .withIssuer("auth0")
-                    .withExpiresAt(expirationDate())
+                    .withIssuedAt(new Date(System.currentTimeMillis()))
+                    .withExpiresAt(new Date(System.currentTimeMillis() + 900000)) // equals 15 minutes
+                    .withClaim("sub", user.getId())
+                    .withSubject(Integer.toString(user.getId()))
                     .sign(algorithm);
-
 
             return token;
         } catch (JWTCreationException exception) {
             //Invalid Signing configuration / Couldn't convert Claims.
         }
-
         return null;
-
-
     }
 
-    public static DecodedJWT verifyToken (String token) {
+    public static boolean verifyToken(String token, User user) {
+
 
         try {
             Algorithm algorithm = Algorithm.HMAC256("secret");
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer("auth0")
-                    .acceptExpiresAt(expirationDate().getTime())
-                    .build();
-            DecodedJWT jwt = verifier.verify(token);
-            return jwt;
-        } catch (JWTVerificationException exception){
+                    .withSubject(Integer.toString(user.getId()))
+                    .build(); //Reusable verifier instance
 
-        } return null;
+            verifier.verify(token);
+
+        } catch (JWTVerificationException exception) {
+            //Invalid signature/claims
+        }
+        return false;
     }
 
 }
