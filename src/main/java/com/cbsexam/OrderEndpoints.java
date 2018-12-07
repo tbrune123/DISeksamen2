@@ -17,7 +17,10 @@ import utils.Encryption;
 @Path("orders")
 public class OrderEndpoints {
 
+  //Saving the orders in this cache
   private static OrderCache orderCache = new OrderCache();
+
+  //Checking if an update to the cache is needed or not
   public static boolean forceUpdate=true;
 
   /**
@@ -29,15 +32,22 @@ public class OrderEndpoints {
   public Response getOrder(@PathParam("idOrder") int idOrder) {
 
     // Call our controller-layer in order to get the order from the DB
-    Order order = OrderController.getOrder(idOrder);
+    Order order = orderCache.getOrder(forceUpdate,idOrder);
 
     // TODO: Add Encryption to JSON FIX
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(order);
     json= Encryption.encryptDecryptXOR(json);
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
+    if (order != null) {
+      // Return a response with status 200 and JSON as type
+      return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
+    } else {
+      // Return a response with status 400 and a message in text
+      return Response.status(404).entity("It seems that the order-guy went home for today, no orders to be found").build();
+    }
+
+
   }
 
   /** @return Responses */
@@ -53,10 +63,18 @@ public class OrderEndpoints {
     String json = new Gson().toJson(orders);
     json= Encryption.encryptDecryptXOR(json);
 
+
     this.forceUpdate = false;
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
+    if (orders != null) {
+      // Return a response with status 200 and JSON as type
+      return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
+    } else {
+      // Return a response with status 400 and a message in text
+      return Response.status(404).entity("It seems that the order-guy went home for today, no orders to be found").build();
+    }
+
+
   }
 
   @POST
@@ -83,7 +101,7 @@ public class OrderEndpoints {
     } else {
 
       // Return a response with status 400 and a message in text
-      return Response.status(400).entity("Could not create user").build();
+      return Response.status(400).entity("It seems that the order-guy went home for today, cannot create any order").build();
     }
   }
 }

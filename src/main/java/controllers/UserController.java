@@ -211,7 +211,7 @@ public class UserController {
 
 
                         user.setToken(Token.CreateToken(user));
-                        
+
 
 
         System.out.println("Logged on");

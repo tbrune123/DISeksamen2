@@ -11,13 +11,13 @@ import utils.Config;
 public class OrderCache {
 
     // List of products
-    private ArrayList<Order> orders;
+    private static ArrayList<Order> orders;
 
     // Time cache should live
     private long ttl;
 
     // Sets when the cache has been created
-    private long created;
+    private static long created;
 
     public OrderCache() {
         this.ttl = Config.getOrderTtl();
@@ -35,7 +35,6 @@ public class OrderCache {
             // Get products from controller, since we wish to update.
             ArrayList<Order> orders = OrderController.getOrders();
 
-            System.out.println("StorFedTisseMandOrder");
 
             // Set products for the instance and set created timestamp
             this.orders = orders;
@@ -44,5 +43,26 @@ public class OrderCache {
 
         // Return the documents
         return this.orders;
+    }
+
+    public Order getOrder(boolean forceUpdate, int orderID) {
+        Order order = new Order();
+
+        if (forceUpdate
+                || ((this.created + this.ttl) <= (System.currentTimeMillis())) || this.orders==null) {
+
+            // If cache needs update: Using the ordercontroller to get order from database
+            order = OrderController.getOrder(orderID);
+
+            return order;
+        } else {
+            // If the cache is alright, go through arraylist till right ID is found **/
+            for (Order o : orders){
+                if (orderID==o.getId())
+                    order = o;
+                return order;
+            }
+        }
+        return null;
     }
 }
