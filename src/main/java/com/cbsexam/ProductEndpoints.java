@@ -37,8 +37,13 @@ public class ProductEndpoints {
     //added encryption
     json= Encryption.encryptDecryptXOR(json);
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
+    if (product != null){
+      // Return a response with status 200 and JSON as type
+      return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
+    } else {
+      return Response.status(404).entity("Could not find the guy running around with the product").build();
+    }
+
   }
 
   /** @return Responses */
@@ -55,10 +60,16 @@ public class ProductEndpoints {
     //added encryption
     json= Encryption.encryptDecryptXOR(json);
 
-    this.forceUpdate = false;
+    if (products != null){
+      this.forceUpdate = false;
+      // Return a response with status 200 and JSON as type
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+    } else {
+      return Response.status(404).entity("Could not find the guy running around with the products").build();
+    }
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+
+
   }
 
   @POST
@@ -83,7 +94,7 @@ public class ProductEndpoints {
 
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
-      return Response.status(400).entity("Could not create user").build();
+      return Response.status(400).entity("Could not find the manager responsible for creating users").build();
     }
   }
 }

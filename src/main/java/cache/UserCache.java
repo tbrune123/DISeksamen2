@@ -46,4 +46,26 @@ public class UserCache {
         // Return the documents
         return this.users;
     }
+
+    public User getUser(boolean forceUpdate, int userID) {
+        User user = new User();
+
+        if (forceUpdate
+                || ((this.created + this.ttl) <= (System.currentTimeMillis())) || this.users==null) {
+
+            // Get user from controller.
+            user = UserController.getUser(userID);
+
+            return user;
+        } else {
+            // Get user from already made arraylist by checking against ID
+            for (User u : users){
+                if (userID==u.getId())
+                    user = u;
+                return user;
+            }
+        }
+
+        return null;
+    }
 }

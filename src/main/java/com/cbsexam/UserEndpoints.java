@@ -28,7 +28,7 @@ public class UserEndpoints {
   public Response getUser(@PathParam("idUser") int idUser) {
 
     // Use the ID to get the user from the controller.
-    User user = UserController.getUser(idUser);
+    User user = userCache.getUser(forceUpdate,idUser);
 
     // TODO: Add Encryption to JSON FIX
     // Convert the user object to json in order to return the object
@@ -40,7 +40,7 @@ public class UserEndpoints {
     if (user != null) {
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
-      return Response.status(400).entity("this user has not yet been created :-(").build();
+      return Response.status(400).entity("this user hasen't been created yet").build();
     }
   }
 
@@ -60,10 +60,13 @@ public class UserEndpoints {
     String json = new Gson().toJson(users);
     json= Encryption.encryptDecryptXOR(json);
 
-    this.forceUpdate = true;
-
-    // Return the users with the status code 200
-    return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
+    if (users != null) {
+      this.forceUpdate = true;
+      // Return the users with the status code 200
+      return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
+    } else {
+      return Response.status(400).entity("The guy responsible for getting users is not home atm").build();
+    }
 
   }
 
@@ -83,10 +86,11 @@ public class UserEndpoints {
 
     // Return the data to the user
     if (createUser != null) {
+      this.forceUpdate = true;
       // Return a response with status 200 and JSON as type
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
-      return Response.status(400).entity("Could not find user").build();
+      return Response.status(400).entity("The guys says you cant't create that user, call my number: 60 15 16 09").build();
     }
   }
 
