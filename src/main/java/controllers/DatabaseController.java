@@ -112,31 +112,26 @@ public class DatabaseController {
     // Return the resultset which at this point will be null
     return result;
   }
-  public boolean update(User user) {
 
+  public boolean update (String sql) {
+
+    //
     if (connection == null)
-      connection=getConnection();
+      connection = getConnection();
 
-    try { PreparedStatement updateUser = connection.prepareStatement("UPDATE user SET " + "first_name = ?, "
-            + "last_name= ?, " + "password = ?, " + "email = ?, " + "created_at = ? " + "WHERE id = ?");
+    try {
+      PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-      updateUser.setString(1, user.getFirstname());
-      updateUser.setString(2, user.getLastname());
-      updateUser.setString(3, user.getPassword());
-      updateUser.setString(4, user.getEmail());
-      updateUser.setLong(5, user.getCreatedTime());
-      updateUser.setInt(6,user.getId());
+      int rowaffected = preparedStatement.executeUpdate();
 
-      int rowsAffected = updateUser.executeUpdate();
-
-      if (rowsAffected == 1) {
+      if (rowaffected==1)
         return true;
-      }
 
-    } catch (SQLException sqlExeption) {
-      sqlExeption.printStackTrace();
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
-     return false;
+
+    return false;
   }
 
   public boolean delete(String sql) {
