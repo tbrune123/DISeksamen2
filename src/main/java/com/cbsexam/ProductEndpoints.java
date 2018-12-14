@@ -18,6 +18,7 @@ import utils.Encryption;
 public class ProductEndpoints {
 
   private static ProductCache productCache = new ProductCache();
+
   public static boolean forceUpdate=true;
 
   /**
@@ -29,7 +30,7 @@ public class ProductEndpoints {
   public Response getProduct(@PathParam("idProduct") int idProduct) {
 
     // Call our controller-layer in order to get the order from the DB
-    Product product = ProductController.getProduct(idProduct);
+    Product product = productCache.getProduct(forceUpdate, idProduct);
 
     // TODO: Add Encryption to JSON FIX
     // We convert the java object to json with GSON library imported in Maven

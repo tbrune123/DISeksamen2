@@ -34,9 +34,7 @@ public class UserCache {
 
             // Get products from controller, since we wish to update.
             ArrayList<User> users = UserController.getUsers();
-
-
-            System.out.println("SebastianErEnStorFedTisseMand");
+            
 
             // Set products for the instance and set created timestamp
             this.users = users;

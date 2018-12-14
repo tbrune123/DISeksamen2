@@ -18,6 +18,10 @@ public class Product {
     this.description = description;
     this.stock = stock;
   }
+  //Hvad gør dette helt præcist?
+  public Product() {
+
+  }
 
   public int getId() {
     return id;
