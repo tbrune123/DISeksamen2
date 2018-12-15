@@ -12,6 +12,8 @@ import utils.Encryption;
 import utils.Log;
 import utils.Token;
 
+
+
 @Path("user")
 public class UserEndpoints {
 
@@ -40,7 +42,7 @@ public class UserEndpoints {
     if (user != null) {
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
-      return Response.status(400).entity("this user hasen't been created yet").build();
+      return Response.status(404).entity("this user hasen't been created yet").build();
     }
   }
 
@@ -109,12 +111,11 @@ public class UserEndpoints {
     // Return the user with the status code 200 if succesful or 401 if failed
     if (user != null) {
       //Welcoming the user and providing him/her with the token they need in order to delete or update their user.
-      String msg = "Welcome back "+user.getFirstname() + "! You are now logged on and will receive a token - please save" +
-              " it, as you will need it throughout the system. This is your token:\n\n"+user.getToken() + "\n\nShould you" +
-              "loose your token, you can always log in again :D Enjoy!";
+      String msg = "Welcome "+user.getFirstname() + "! This is your token, please save it for your time in the session" +
+              " ,as you will need it throughout the system. This is your token:\n\n"+user.getToken() + "\n\nIf you lose your token, you can relog and get a new.";
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(msg).build();
     } else {
-      return Response.status(401).entity("THere is no user maatching, please try again or call support").build();
+      return Response.status(401).entity("THere is no user matching, please try again or call support").build();
     }
 
 
@@ -143,7 +144,7 @@ public class UserEndpoints {
         // Return a response with status 200 and a massage
         return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("User deleted").build();
       } else {
-        // Return a response with status 200 and a message
+        // Return a response with status 400 and a message
         return Response.status(400).entity("No user found to be deleted - you may try again").build();
       }
     } else {
