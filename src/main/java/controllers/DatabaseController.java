@@ -26,6 +26,10 @@ public class DatabaseController {
   public static Connection getConnection() {
     try {
       // Set the dataabase connect with the data from the config
+
+      if (connection == null) {
+
+
       String url =
           "jdbc:mysql://"
               + Config.getDatabaseHost()
@@ -43,6 +47,7 @@ public class DatabaseController {
 
       // create a connection to the database
       connection = DriverManager.getConnection(url, user, password);
+    }
 
     } catch (SQLException e) {
       System.out.println(e.getMessage());
