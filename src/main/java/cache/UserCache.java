@@ -8,7 +8,7 @@ import utils.Config;
 public class UserCache {
 
     // List of products
-  private ArrayList<User> users;
+  private ArrayList<User> userList;
 
     // Time cache should live
     private long ttl;
@@ -27,26 +27,26 @@ public class UserCache {
         // If the list is empty we also check for new products
         if (forceUpdate
                 || ((this.created + this.ttl) <= (System.currentTimeMillis()))
-                || this.users==null) {
+                || this.userList ==null) {
 
             // Get products from controller, since we wish to update.
             ArrayList<User> users = UserController.getUsers();
 
 
             // Set products for the instance and set created timestamp
-            this.users = users;
+            this.userList = users;
             this.created = System.currentTimeMillis();
         }
 
         // Return the documents
-        return this.users;
+        return this.userList;
     }
 
     public User getUser(boolean forceUpdate, int userID) {
         User user = new User();
 
         if (forceUpdate
-                || ((this.created + this.ttl) <= (System.currentTimeMillis())) || this.users==null) {
+                || ((this.created + this.ttl) <= (System.currentTimeMillis())) || this.userList ==null) {
 
             // Get user from controller.
             user = UserController.getUser(userID);
@@ -54,7 +54,7 @@ public class UserCache {
             return user;
         } else {
             // Get user from already made arraylist by checking against ID
-            for (User u : users){
+            for (User u : userList){
                 if (userID==u.getId())
                     user = u;
                 return user;
