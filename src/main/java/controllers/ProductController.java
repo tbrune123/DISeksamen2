@@ -34,7 +34,7 @@ public class ProductController {
       if (rs.next()) {
         product =
             new Product(
-                rs.getInt("id"),
+                rs.getInt("p_id"),
                 rs.getString("product_name"),
                 rs.getString("sku"),
                 rs.getFloat("price"),
@@ -69,7 +69,7 @@ public class ProductController {
       if (rs.next()) {
         product =
             new Product(
-                rs.getInt("id"),
+                rs.getInt("p_id"),
                 rs.getString("product_name"),
                 rs.getString("sku"),
                 rs.getFloat("price"),
@@ -109,7 +109,7 @@ public class ProductController {
       while (rs.next()) {
         Product product =
             new Product(
-                rs.getInt("id"),
+                rs.getInt("p_id"),
                 rs.getString("product_name"),
                 rs.getString("sku"),
                 rs.getFloat("price"),
@@ -140,7 +140,7 @@ public class ProductController {
 
     // Insert the product in the DB
     int productID = dbCon.insert(
-        "INSERT INTO product(product_name, sku, price, description, stock, created_at) VALUES('"
+        "INSERT INTO product(product_name, sku, price, description, stock, product_created_at) VALUES('"
             + product.getName()
             + "', '"
             + product.getSku()
@@ -164,5 +164,21 @@ public class ProductController {
 
     // Return product
     return product;
+  }
+
+  public static Product setProduct(ResultSet rs) {
+    try {
+      Product product = new Product(rs.getInt("p_id"),
+              rs.getString("product_name"),
+              rs.getString("sku"),
+              rs.getFloat("price"),
+              rs.getString("description"),
+              rs.getInt("stock"));
+
+      return product;
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 }
