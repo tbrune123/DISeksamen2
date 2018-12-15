@@ -13,49 +13,27 @@ public class AddressController {
     dbCon = new DatabaseController();
   }
 
-  public static Address getAddress(int id) {
 
-    // Check for DB Connection
-    if (dbCon == null) {
-      dbCon = new DatabaseController();
-    }
-
-    // Our SQL string
-    String sql = "SELECT * FROM address where id=" + id;
-
-    // Do the query and set the initial value to null
-    ResultSet rs = dbCon.query(sql);
-    Address address = null;
-
+  public static Address setAddress(ResultSet rs) {
     try {
-      // Get the first row and build an address object
-      if (rs.next()) {
-        address =
-            new Address(
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("street_address"),
-                rs.getString("city"),
-                rs.getString("zipcode")
-                );
+      Address address = new Address(rs.getInt("a_id"),
+              rs.getString("name"),
+              rs.getString("street_address"),
+              rs.getString("city"),
+              rs.getString("zipcode")
+      );
 
-        // Return our newly added object
-        return address;
-      } else {
-        System.out.println("No address found");
-      }
-    } catch (SQLException ex) {
-      System.out.println(ex.getMessage());
+      return address;
+    } catch (SQLException e) {
+      e.printStackTrace();
     }
-
-    // Returns null if we can't find anything.
-    return address;
+    return null;
   }
 
   public static Address createAddress(Address address) {
 
     // Write in log that we've reach this step
-    Log.writeLog(ProductController.class.getName(), address, "Actually creating a line item in DB", 0);
+    Log.writeLog(ProductController.class.getName(), address, "Adding an address in the DB", 0);
 
     // Check for DB Connection
     if (dbCon == null) {
