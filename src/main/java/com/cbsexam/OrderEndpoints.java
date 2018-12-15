@@ -17,10 +17,10 @@ import utils.Encryption;
 @Path("orders")
 public class OrderEndpoints {
 
-  //Saving the orders in this cache
+  /** Gemmer alle ordre i cache **/
   private static OrderCache orderCache = new OrderCache();
 
-  //Checking if an update to the cache is needed or not
+  /** Tjekker om der er brug for en update til cache **/
   public static boolean forceUpdate=true;
 
   /**
