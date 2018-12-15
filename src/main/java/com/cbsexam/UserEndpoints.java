@@ -114,7 +114,7 @@ public class UserEndpoints {
               "loose your token, you can always log in again :D Enjoy!";
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(msg).build();
     } else {
-      return Response.status(401).entity("We could not find the user or it does not exist - please try again").build();
+      return Response.status(401).entity("THere is no user maatching, please try again or call support").build();
     }
 
 
