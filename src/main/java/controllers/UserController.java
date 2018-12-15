@@ -184,6 +184,8 @@ public class UserController {
 
   public static User login(User user){
 
+    //letting the user know that the program is trying to log on, in cause of delay
+    Log.writeLog(UserController.class.getName(), user, "Logging you on", 0);
     if (dbCon == null) {
       dbCon = new DatabaseController();
     }

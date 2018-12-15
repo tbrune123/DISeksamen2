@@ -17,7 +17,7 @@ public class UserEndpoints {
 
   private static UserCache userCache = new UserCache();
   public static boolean forceUpdate=true;
-  private static User currentUser = new User();
+
 
   /**
    * @param idUser
@@ -100,21 +100,21 @@ public class UserEndpoints {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response loginUser(String body) {
 
+    // Read the json from body and transfer it to a user class
+    User userToBe = new Gson().fromJson(body, User.class);
 
-    User user = new Gson().fromJson(body, User.class);
+    // Use the email and password to get the user verify the user in the controller which also gives them a token.
+    User user = UserController.login(userToBe);
 
-    User TheuserLogin = UserController.login(user);
-
-    String json = new Gson().toJson(TheuserLogin);
-
-
-
-    if (TheuserLogin != null) {
-      currentUser = TheuserLogin;
-      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
-
+    // Return the user with the status code 200 if succesful or 401 if failed
+    if (user != null) {
+      //Welcoming the user and providing him/her with the token they need in order to delete or update their user.
+      String msg = "Welcome back "+user.getFirstname() + "! You are now logged on and will receive a token - please save" +
+              " it, as you will need it throughout the system. This is your token:\n\n"+user.getToken() + "\n\nShould you" +
+              "loose your token, you can always log in again :D Enjoy!";
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(msg).build();
     } else {
-      return Response.status(400).entity("There is no such user").build();
+      return Response.status(401).entity("We could not find the user or it does not exist - please try again").build();
     }
 
 
