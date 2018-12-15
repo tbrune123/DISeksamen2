@@ -11,13 +11,13 @@ public class ProductCache {
   private static ArrayList<Product> products;
 
   // Time cache should live
-  private long ttl;
+  private long lifeTimeOfCache;
 
   // Sets when the cache has been created
   private static long created;
 
   public ProductCache() {
-    this.ttl = Config.getProductTtl();
+    this.lifeTimeOfCache = Config.getProductTtl();
   }
 
   public ArrayList<Product> getProducts(Boolean forceUpdate) {
@@ -26,7 +26,7 @@ public class ProductCache {
     // Otherwise we look at the age of the cache and figure out if we should update.
     // If the list is empty we also check for new products
     if (forceUpdate
-        || ((this.created + this.ttl) <= (System.currentTimeMillis() ))
+        || ((this.created + this.lifeTimeOfCache) <= (System.currentTimeMillis() ))
         || this.products==null) {
 
       // Get products from controller, since we wish to update.
@@ -45,7 +45,7 @@ public class ProductCache {
     Product product = new Product();
 
     if (forceUpdate
-            || ((this.created + this.ttl) <= (System.currentTimeMillis())) || this.products==null) {
+            || ((this.created + this.lifeTimeOfCache) <= (System.currentTimeMillis())) || this.products==null) {
 
       // Get product from controller based on id
       product = ProductController.getProduct(productID);
