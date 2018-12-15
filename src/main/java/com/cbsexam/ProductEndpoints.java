@@ -95,7 +95,7 @@ public class ProductEndpoints {
 
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
-      return Response.status(400).entity("Could not find the manager responsible for creating users").build();
+      return Response.status(400).entity("Could not find the manager responsible for making new products").build();
     }
   }
 }
