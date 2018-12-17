@@ -64,11 +64,12 @@ public class OrderEndpoints {
     json= Encryption.encryptDecryptXOR(json);
 
 
-    this.forceUpdate = false;
+
 
     if (orders != null) {
+      this.forceUpdate = false;
       // Return a response with status 200 and JSON as type
-      return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
       // Return a response with status 400 and a message in text
       return Response.status(404).entity("It seems that the order-guy went home for today, no orders to be found").build();

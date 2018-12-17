@@ -12,7 +12,6 @@ import utils.Token;
 public class UserController {
 
   private static DatabaseController dbCon;
-  private static User currentUser = new User();
 
   public UserController() {
     dbCon = new DatabaseController();
@@ -26,7 +25,7 @@ public class UserController {
     }
 
     // Build the query for DB
-    String sql = "SELECT * FROM user where id=" + id;
+    String sql = "SELECT * FROM user where u_id=" + id;
 
     // Actually do the query
     ResultSet rs = dbCon.query(sql);
@@ -37,7 +36,7 @@ public class UserController {
       if (rs.next()) {
         user =
             new User(
-                rs.getInt("id"),
+                rs.getInt("u_id"),
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("password"),
@@ -58,7 +57,6 @@ public class UserController {
 
   /**
    * Get all users in database
-   *
    * @return
    */
   public static ArrayList<User> getUsers() {
@@ -80,7 +78,7 @@ public class UserController {
       while (rs.next()) {
         User user =
             new User(
-                rs.getInt("id"),
+                rs.getInt("u_id"),
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("password"),
@@ -147,8 +145,6 @@ public class UserController {
 
     user.setPassword(Hashing.sha(user.getPassword()));
 
-    //DETTE SKAL LIGE FIKSES!!!!!!!!!!!!!
-
     boolean affected = dbCon.update(
             "UPDATE user SET " +
                     "first_name = " + "'" + user.getFirstname() + "'," +
@@ -190,7 +186,6 @@ public class UserController {
       dbCon = new DatabaseController();
     }
 
-
     user.setPassword(Hashing.sha(user.getPassword()));
 
     try {
@@ -205,7 +200,7 @@ public class UserController {
       if (rs.next()) {
         user =
                 new User (
-                        rs.getInt("id"),
+                        rs.getInt("u_id"),
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("password"),
@@ -213,7 +208,6 @@ public class UserController {
 
 
                         user.setToken(Token.CreateToken(user));
-
 
 
         System.out.println("Logged on");
@@ -231,5 +225,21 @@ public class UserController {
     return null;
 
     }
+
+  public static User setUser(ResultSet rs){
+
+    try{
+      User u = new User(rs.getInt("u_id"),
+              rs.getString("first_name"),
+              rs.getString("last_name"),
+              rs.getString("password"),
+              rs.getString("email"));
+
+      return u;
+    }catch(SQLException e){
+
+    }
+    return null;
+  }
 
 }

@@ -11,13 +11,13 @@ public class UserCache {
   private ArrayList<User> userList;
 
     // Time cache should live
-    private long ttl;
+    private long lifeTimeOfCache;
 
     // Sets when the cache has been created
     private long created;
 
     public UserCache() {
-        this.ttl = Config.getUserTtl();
+        this.lifeTimeOfCache = Config.getUserTtl();
     }
 
     public ArrayList<User> getUsers(Boolean forceUpdate) {
@@ -26,11 +26,14 @@ public class UserCache {
         // Otherwise we look at the age of the cache and figure out if we should update.
         // If the list is empty we also check for new products
         if (forceUpdate
-                || ((this.created + this.ttl) <= (System.currentTimeMillis()))
+                || ((this.created + this.lifeTimeOfCache) <= (System.currentTimeMillis()))
                 || this.userList ==null) {
 
             // Get products from controller, since we wish to update.
             ArrayList<User> users = UserController.getUsers();
+
+
+            System.out.println("det virker");
 
 
             // Set products for the instance and set created timestamp
@@ -46,7 +49,7 @@ public class UserCache {
         User user = new User();
 
         if (forceUpdate
-                || ((this.created + this.ttl) <= (System.currentTimeMillis())) || this.userList ==null) {
+                || ((this.created + this.lifeTimeOfCache) <= (System.currentTimeMillis())) || this.userList ==null) {
 
             // Get user from controller.
             user = UserController.getUser(userID);

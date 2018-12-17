@@ -28,7 +28,6 @@ public final class Token {
                     .withIssuer("auth0")
                     .withIssuedAt(new Date(System.currentTimeMillis()))
                     .withExpiresAt(new Date(System.currentTimeMillis() + 900000)) // equals 15 minutes
-                    .withClaim("sub", user.getId())
                     .withSubject(Integer.toString(user.getId()))
                     .sign(algorithm);
 
@@ -50,6 +49,8 @@ public final class Token {
                     .build(); //Reusable verifier instance
 
             verifier.verify(token);
+
+            return true;
 
         } catch (JWTVerificationException exception) {
             //Invalid signature/claims

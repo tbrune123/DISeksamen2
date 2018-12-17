@@ -13,13 +13,13 @@ public class OrderCache {
     private static ArrayList<Order> orderList;
 
     // Time cache should live
-    private long ttl;
+    private long lifeTimeOfCache;
 
     // Sets when the cache has been created
     private static long created;
 
     public OrderCache() {
-        this.ttl = Config.getOrderTtl();
+        this.lifeTimeOfCache = Config.getOrderTtl();
     }
 
     public ArrayList<Order> getOrders(Boolean forceUpdate) {
@@ -28,11 +28,13 @@ public class OrderCache {
         // Otherwise we look at the age of the cache and figure out if we should update.
         // If the list is empty we also check for new products
         if (forceUpdate
-                || ((this.created + this.ttl) <= (System.currentTimeMillis()))
+                || ((this.created + this.lifeTimeOfCache) <= (System.currentTimeMillis()))
                 || this.orderList ==null) {
 
             // Get products from controller, since we wish to update.
             ArrayList<Order> orders = OrderController.getOrders();
+
+            System.out.println("virker");
 
 
             // Set products for the instance and set created timestamp
@@ -48,7 +50,7 @@ public class OrderCache {
         Order order = new Order();
 
         if (forceUpdate
-                || ((this.created + this.ttl) <= (System.currentTimeMillis())) || this.orderList ==null) {
+                || ((this.created + this.lifeTimeOfCache) <= (System.currentTimeMillis())) || this.orderList ==null) {
 
             // If cache needs update: Using the ordercontroller to get order from database
             order = OrderController.getOrder(orderID);

@@ -51,25 +51,27 @@ public class UserEndpoints {
   @Path("/")
   public Response getUsers() {
 
-    // Write to log that we are here
+    // Write to log know that we are here
     Log.writeLog(this.getClass().getName(), this, "Get all users", 0);
 
-    // Get a list of users
+    // Get a list of users by first checking the cache and therein if there is not cache have the usercontroller contact
+    // the database and get them + create a new cache.
     ArrayList<User> users = userCache.getUsers(forceUpdate);
 
+
     // TODO: Add Encryption to JSON FIX
-    // Transfer users to json in order to return it to the user
+    // Transfer users to json in order to return it to the user and have ti encrypted
     String json = new Gson().toJson(users);
-    json= Encryption.encryptDecryptXOR(json);
+    json = Encryption.encryptDecryptXOR(json);
 
+    // Return the users with the status code 200 for success or 404 if failed
     if (users != null) {
-      this.forceUpdate = true;
-      // Return the users with the status code 200
-      return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
+      // Now that we have created a cache, we do not need to force update before there are changes made.
+      this.forceUpdate = false;
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
-      return Response.status(400).entity("The guy responsible for getting users is not home atm").build();
+      return Response.status(404).entity("The guy responsible for getting users is not home atm").build();
     }
-
   }
 
   @POST

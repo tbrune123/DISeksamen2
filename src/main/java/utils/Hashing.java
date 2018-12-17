@@ -10,6 +10,7 @@ public final class Hashing {
   private static String salt = "asd12ds2";
 
   // TODO: You should add a salt and make this secure FIX
+  /**BRUGER IKKE DENNE MD5 METODE**/
   public static String md5(String rawString)
 
     {
