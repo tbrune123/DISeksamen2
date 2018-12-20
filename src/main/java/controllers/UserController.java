@@ -103,13 +103,6 @@ public class UserController {
     return users;
   }
 
-  /** @param user
-   * @return user
-   * 1. The createUser() methods takes the User we initialized in the endpoint
-   * 2. First we set a created_at for the user
-   * 3. Next we build the SQL-prepared statement and insert it to our database
-   * 4. The genereated key is set to the user_id, and the user is returned.
-   */
 
   // This method takes the user made in the endpoint. Next the method set a created_at for the user, then building
   // the SQL prepared statement and sending it to the database.
@@ -192,7 +185,7 @@ public class UserController {
     }
 
     // Build the query for DB
-    String sql = "Delete FROM user where id=" + idUser;
+    String sql = "Delete FROM user where u_id=" + idUser;
 
     boolean deleted = dbCon.delete(sql);
     if (deleted)
