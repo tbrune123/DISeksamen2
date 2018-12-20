@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import model.Order;
 import utils.Config;
 
+// TODO: add OrderCache FIX
+
 public class OrderCache {
 
     // List of products

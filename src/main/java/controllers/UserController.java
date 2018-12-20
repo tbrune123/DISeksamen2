@@ -201,7 +201,6 @@ public class UserController {
       return false;
     }
     // Insert the user in the DB
-    // TODO: Hash the user password before saving it. FIX
   }
 
 
@@ -216,7 +215,7 @@ public class UserController {
     if (dbCon == null) {
       dbCon = new DatabaseController();
     }
-
+    // TODO: Hash the user password before saving it. FIX
     user.setPassword(Hashing.sha(user.getPassword()));
 
     try {

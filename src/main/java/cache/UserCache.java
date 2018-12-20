@@ -5,6 +5,8 @@ import controllers.UserController;
 import model.User;
 import utils.Config;
 
+// TODO: add UserCache FIX
+
 public class UserCache {
 
     // List of products
