@@ -18,7 +18,7 @@ public class Product {
     this.description = description;
     this.stock = stock;
   }
-  //Hvad gør dette helt præcist?
+
   public Product() {
 
   }

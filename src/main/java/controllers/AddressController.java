@@ -14,22 +14,6 @@ public class AddressController {
   }
 
 
-  public static Address setAddress(ResultSet rs) {
-    try {
-      Address address = new Address(rs.getInt("a_id"),
-              rs.getString("name"),
-              rs.getString("street_address"),
-              rs.getString("city"),
-              rs.getString("zipcode")
-      );
-
-      return address;
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }
-
   public static Address createAddress(Address address) {
 
     // Write in log that we've reach this step

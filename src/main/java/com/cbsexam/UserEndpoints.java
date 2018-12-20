@@ -25,6 +25,10 @@ public class UserEndpoints {
    * @param idUser
    * @return Responses
    */
+
+  // This method first checks for user in the cache, if there is no user or the user needs to be updated, it will
+  //collect from the database instead. The user gets encrypted with json and send to the user. If things fail
+  //it will give error 404 and some text ;=)
   @GET
   @Path("/{idUser}")
   public Response getUser(@PathParam("idUser") int idUser) {
@@ -37,7 +41,7 @@ public class UserEndpoints {
     String json = new Gson().toJson(user);
     json= Encryption.encryptDecryptXOR(json);
 
-    // Return the user with the status code 200
+    // Return the user with the status code 200 or 404 if things go wrong
     // TODO: What should happen if something breaks down? FIX
     if (user != null) {
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
@@ -47,12 +51,16 @@ public class UserEndpoints {
   }
 
   /** @return Responses */
+
+  // This method first checks for users in the cache, if there is no users or the users needs to be updated, it will
+  //collect from the database instead. The users gets encrypted with json and send to the user. If things fail
+  //it will give error 404 and some text ;=)
   @GET
   @Path("/")
   public Response getUsers() {
 
     // Write to log know that we are here
-    Log.writeLog(this.getClass().getName(), this, "Get all users", 0);
+    Log.writeLog(this.getClass().getName(), this, "Getting all users", 0);
 
     // Get a list of users by first checking the cache and therein if there is not cache have the usercontroller contact
     // the database and get them + create a new cache.
@@ -60,13 +68,12 @@ public class UserEndpoints {
 
 
     // TODO: Add Encryption to JSON FIX
-    // Transfer users to json in order to return it to the user and have ti encrypted
     String json = new Gson().toJson(users);
     json = Encryption.encryptDecryptXOR(json);
 
-    // Return the users with the status code 200 for success or 404 if failed
+    // Return the users with the status code 200 or 404
     if (users != null) {
-      // Now that we have created a cache, we do not need to force update before there are changes made.
+      // just created a new cache, so setting forceUpdate to false
       this.forceUpdate = false;
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
@@ -74,6 +81,10 @@ public class UserEndpoints {
     }
   }
 
+
+  // This method creates an user based on the information provided from the user making it
+  // Using the controller to save the new user in the database. The user is then converted to json and send
+  // back to the user. If anything goes wrong it will return 404 and a text ;=)
   @POST
   @Path("/")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -85,11 +96,11 @@ public class UserEndpoints {
     // Use the controller to add the user
     User createUser = UserController.createUser(newUser);
 
-    // Get the user back with the added ID and return it to the user
     String json = new Gson().toJson(createUser);
 
     // Return the data to the user
     if (createUser != null) {
+      // just created a new cache, so setting forceUpdate to false
       this.forceUpdate = true;
       // Return a response with status 200 and JSON as type
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
@@ -99,6 +110,7 @@ public class UserEndpoints {
   }
 
   // TODO: Make the system able to login users and assign them a token to use throughout the system. FIX
+  // This method takes the information provided by the user and logging in if information matches.
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -107,35 +119,42 @@ public class UserEndpoints {
     // Read the json from body and transfer it to a user class
     User userToBe = new Gson().fromJson(body, User.class);
 
-    // Use the email and password to get the user verify the user in the controller which also gives them a token.
+    // Using the email & password to verify the user in the controller and then give them a token.
     User user = UserController.login(userToBe);
 
     // Return the user with the status code 200 if succesful or 401 if failed
     if (user != null) {
-      //Welcoming the user and providing him/her with the token they need in order to delete or update their user.
-      String msg = "Welcome "+user.getFirstname() + "! This is your token, please save it for your time in the session" +
-              " ,as you will need it throughout the system. This is your token:\n\n"+user.getToken() + "\n\nIf you lose your token, you can relog and get a new.";
+      //Sending a message to the user that he/she is logged in and then giving them a token.
+      String msg = "Welcome "+user.getFirstname() + "! Here is your token, save it for your time being in this session" +
+              " ,because you will need it while using the system. This is your token:\n\n"+user.getToken() + "\n\nIf you " +
+              "can relog if you lose your token, you will then be provited with a new :=) ";
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(msg).build();
     } else {
-      return Response.status(401).entity("THere is no user matching, please try again or call support").build();
+      return Response.status(401).entity("There is no user matching, please try again or call support, you know my number ;=)").build();
     }
 
 
   }
 
+
+
   // TODO: Make the system able to delete users FIX
+  // This method takes the information provited from the user. They need to provide their ID and token, so that only the
+  // user who have the rights to delete/update are able to do it. The token verify is then used and if its a match it will
+  // delete, if not sending a 401 error saying they are not authorised. If it succseeds the use will be deleted from the
+  // database and a forceUpdate on the cache.
   @DELETE
   @Path("/{idUser}")
   @Consumes(MediaType.APPLICATION_JSON)
   public Response deleteUser(@PathParam("idUser") int idUser, String body) {
 
-    //Setting a user from the information - note the changes to userobject - we have added token as a instance variable
+    //Setting a user from the information givin
     User userToDelete = new Gson().fromJson(body, User.class);
 
     // Write to log that we are here
     Log.writeLog(this.getClass().getName(), this, "Deleting a user", 0);
 
-    // Use the ID and token to first verify the possibly delete the user from the database via controller.
+    // Use the ID and token match it will delete from the controller
     if (Token.verifyToken(userToDelete.getToken(), userToDelete)) {
       boolean deleted = UserController.deleteUser(idUser);
 
@@ -154,13 +173,15 @@ public class UserEndpoints {
       return Response.status(401).entity("You do not have authorizion for this action - please log in first").build();
     }
   }
-  //public Response deleteUser(String x) {
 
-    // Return a response with status 200 and JSON as type
-    //return Response.status(400).entity("Endpoint not implemented yet").build();
-  //}
 
   // TODO: Make the system able to update users FIX
+
+
+  // This method takes the information provited from the user. They need to provide their ID and token, so that only the
+  // user who have the rights to delete/update are able to do it. The token verify is then used and if its a match it will
+  // update, if not sending a 401 error saying they are not authorised. If it succseeds the use will be deleted from the
+  // database and a forceUpdate on the cache.
   @PUT
   @Path("/update/{idUser}")
   @Consumes(MediaType.APPLICATION_JSON)

@@ -17,6 +17,7 @@ public final class Encryption {
       StringBuilder thisIsEncrypted = new StringBuilder();
 
       // TODO: This is where the magic of XOR is happening. Are you able to explain what is going on?
+      //
       for (int i = 0; i < rawString.length(); i++) {
         thisIsEncrypted.append((char) (rawString.charAt(i) ^ Config.getEncKey()[i % Config.getEncKey().length]));
       }

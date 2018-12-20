@@ -19,6 +19,8 @@ public final class Token {
     }
 
 
+
+    // We load the hashing algorithm we wish to use and create the token with claims.
     public static String CreateToken (User user) {
 
         try {
@@ -38,6 +40,9 @@ public final class Token {
         return null;
     }
 
+
+
+    // this method veryfies the token with the claims and signature
     public static boolean verifyToken(String token, User user) {
 
 

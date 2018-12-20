@@ -17,6 +17,9 @@ public class UserController {
     dbCon = new DatabaseController();
   }
 
+  // This method are getting the user based on the ID from the database
+  // The method builds an SQL query to get all the information about the user in a resultset
+  // we execute prepared statement and form the user to be returned
   public static User getUser(int id) {
 
     // Check for connection
@@ -24,7 +27,7 @@ public class UserController {
       dbCon = new DatabaseController();
     }
 
-    // Build the query for DB
+    // Build the query for database
     String sql = "SELECT * FROM user where u_id=" + id;
 
     // Actually do the query
@@ -59,6 +62,10 @@ public class UserController {
    * Get all users in database
    * @return
    */
+
+  // This method are getting the user based on the ID from the database
+  // The method builds an SQL query to get all the information about the user in a resultset
+  // we execute prepared statement and form the user to be returned. lastly the method adds the users to arrayList
   public static ArrayList<User> getUsers() {
 
     // Check for DB connection
@@ -71,6 +78,7 @@ public class UserController {
 
     // Do the query and initialyze an empty list for use if we don't get results
     ResultSet rs = dbCon.query(sql);
+
     ArrayList<User> users = new ArrayList<User>();
 
     try {
@@ -95,6 +103,16 @@ public class UserController {
     return users;
   }
 
+  /** @param user
+   * @return user
+   * 1. The createUser() methods takes the User we initialized in the endpoint
+   * 2. First we set a created_at for the user
+   * 3. Next we build the SQL-prepared statement and insert it to our database
+   * 4. The genereated key is set to the user_id, and the user is returned.
+   */
+
+  // This method takes the user made in the endpoint. Next the method set a created_at for the user, then building
+  // the SQL prepared statement and sending it to the database.
   public static User createUser(User user) {
 
     // Write in log that we've reach this step
@@ -135,6 +153,11 @@ public class UserController {
     // Return user
     return user;
   }
+
+
+
+  // This method takes the user made in the endpoint. Next the password is being hashed and the method is building the
+  // SQL-prepared statement and updating it in the database.
   public static boolean updateUser(User user) {
 
     Log.writeLog(UserController.class.getName(), user, "Actually updating a user in DB", 0);
@@ -143,6 +166,7 @@ public class UserController {
       dbCon = new DatabaseController();
     }
 
+    // Hashing the password
     user.setPassword(Hashing.sha(user.getPassword()));
 
     boolean affected = dbCon.update(
@@ -156,6 +180,9 @@ public class UserController {
     return affected;
   }
 
+
+  //The deleteUser() methods deletes the user from the database based on the id of the user and then
+  // building the SQL-prepared statement and compare it with our user data in the database.
   public static boolean deleteUser(int idUser) {
 
 
@@ -178,6 +205,10 @@ public class UserController {
   }
 
 
+
+  //This method takes the user we made in the endpoint and hash the password.
+  // Then it builds the SQL-prepared statement and compare it with our user-data in the database
+  // and if a match is found a token will be generated and declared to the user
   public static User login(User user){
 
     //letting the user know that the program is trying to log on, in cause of delay
@@ -226,6 +257,8 @@ public class UserController {
 
     }
 
+
+  // initialising, instansiating and declaring a user, to be returned
   public static User setUser(ResultSet rs){
 
     try{

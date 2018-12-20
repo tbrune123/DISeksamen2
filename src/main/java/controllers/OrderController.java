@@ -15,6 +15,10 @@ public class OrderController {
     dbCon = new DatabaseController();
   }
 
+
+  // This method takes the order based on the ID
+  // Then building an SQL query to get all the information about the orders in a resultset
+  // If there is more than one product in the order, its using the else statement
   public static Order getOrder(int orderId) {
     // check for connection
     if (dbCon == null) {
@@ -92,6 +96,11 @@ public class OrderController {
    *
    * @return
    */
+
+
+  // This method takes all the orders from the database and building an SQL query to get all the information
+  // about the orders in a resultset. If there is more then one product in the order, it makes the else if statement.
+  // Then inserting the orders in the arrayList
   public static ArrayList<Order> getOrders() {
     // check for connection
     if (dbCon == null) {
@@ -175,6 +184,12 @@ public class OrderController {
 
   }
 
+
+
+  // This method takes the order made in the endpoint, to add more information to it. First the method sets a -
+  // created and update for the order. To make sure all the information needed is right, the method use transactions
+  // When the transaction has started it sets the 2 address-IDs with the keys returned from the getAddress methods
+  // Then it gets the user who created the order and setting the order customer to this
   public static Order createOrder(Order order) {
 
 
@@ -188,16 +203,12 @@ public class OrderController {
     // Check for DB Connection
     if (dbCon == null) {
       dbCon = new DatabaseController();
-
     }
 
     try {
 
       //We set the autocommit to false, making the way to use transactions
       dbCon.getConnection().setAutoCommit(false);
-
-
-
 
       //Setting the IDs of billing- and shippingAddress to the order
       //in other word: Save addresses to database and save them back to initial order instance
@@ -240,9 +251,10 @@ public class OrderController {
       //Add line items to the order, commit and return the order
       order.setLineItems(items);
       dbCon.getConnection().commit();
+      return  order;
 
-      // adding nullpointerexception, since we are using getUser() instead of createUser() - we would like people to be
-      // logged in before they create an order - like Amazon.
+      // adding nullpointerexception, since we are using getUser instead of createUser, we would like people to be
+      // logged in before they create an order.
     } catch (SQLException | NullPointerException e) {
       System.out.println(e.getMessage());
       try {
@@ -262,8 +274,11 @@ public class OrderController {
         e.printStackTrace();
       }
     }
-    return  order;
+    return  null;
   }
+
+
+
 
   public static Order setOrder1(ResultSet rs, User user, ArrayList<LineItem> lineItemsList, Address billingsAddress, Address shippingsAddres) {
     try {

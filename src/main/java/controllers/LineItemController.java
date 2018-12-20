@@ -11,6 +11,9 @@ public class LineItemController {
 
   private static DatabaseController dbCon;
 
+
+  // This method takes a lineItem, connects it with the order tru orderid and saves it in the database
+  // The lineItemID will we be set to the generated key from the insert to the database
   public LineItemController() {
     dbCon = new DatabaseController();
   }
@@ -31,31 +34,31 @@ public class LineItemController {
 
     // Update the ID of the product
 
-    // Insert the product in the DB
+    // Insert the line item in the DB
     int lineItemID = dbCon.insert(
-        "INSERT INTO line_item(product_id, order_id, price, quantity) VALUES("
-            + lineItem.getProduct().getId()
-            + ", "
-            + orderID
-            + ", "
-            + lineItem.getPrice()
-            + ", "
-            + lineItem.getQuantity()
-            + ")");
+            "INSERT INTO line_item(product_id, order_id, l_price, quantity) VALUES("
+                    + lineItem.getProduct().getId()
+                    + ", "
+                    + orderID
+                    + ", "
+                    + lineItem.getPrice()
+                    + ", "
+                    + lineItem.getQuantity()
+                    + ")");
 
     if (lineItemID != 0) {
-      //Update the productid of the product before returning
+      //Update the line item id of the line item before returning
       lineItem.setId(lineItemID);
-    } else{
+      return lineItem;
 
-      // Return null if product has not been inserted into database
+    } else{
+      // Return null if line item has not been inserted into database
       return null;
     }
-
-    // Return product
-    return lineItem;
   }
 
+
+  // This method() instantiate, initialize and declare an LineItem-object based on information from the resultset
   public static LineItem setLineItem(ResultSet rs, Product product) {
     try {
       LineItem lineItem = new LineItem(rs.getInt("l_id"),product,

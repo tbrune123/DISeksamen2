@@ -14,6 +14,11 @@ public class ProductController {
     dbCon = new DatabaseController();
   }
 
+
+
+  // This method finds the product based on the ID
+  // Then building an SQL query to get all the information about the product in a resultset
+  // Excicuting the prepared statement and form the product to be returned
   public static Product getProduct(int id) {
 
     // check for connection
@@ -54,6 +59,10 @@ public class ProductController {
     return product;
   }
 
+
+  // This method finds the product based on the sku
+  // Then building an SQL query to get all the information about the product in a resultset
+  // Excicuting the prepared statement and form the product to be returned
   public static Product getProductBySku(String sku) {
 
     if (dbCon == null) {
@@ -92,6 +101,11 @@ public class ProductController {
    *
    * @return
    */
+
+
+  // This method takes all the products from the database
+  // Then building an SQL query to get all the information about our product in a resultset
+  // then exicuting the prepared statement and adding the prodcuts to the arrayList
   public static ArrayList<Product> getProducts() {
 
     if (dbCon == null) {
@@ -125,6 +139,11 @@ public class ProductController {
     return products;
   }
 
+
+  // This method takes the product made in the endpoint
+  // Setting a created_at for the product
+  // Building the SQL prepared statement and sending it to the database
+  // The genereated key is set to the product_id
   public static Product createProduct(Product product) {
 
     // Write in log that we've reach this step
@@ -166,6 +185,9 @@ public class ProductController {
     return product;
   }
 
+
+
+  // Initialising, instantiating and declaring a product
   public static Product setProduct(ResultSet rs) {
     try {
       Product product = new Product(rs.getInt("p_id"),

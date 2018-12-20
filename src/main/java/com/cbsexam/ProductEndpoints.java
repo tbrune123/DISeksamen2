@@ -24,7 +24,13 @@ public class ProductEndpoints {
   /**
    * @param idProduct
    * @return Responses
+   *
    */
+
+
+  // This method first checks for a product in the cache, if there is no product or the product needs to be updated, it will
+  //collect from the database instead. The product gets encrypted with json and send to the user. If things fail
+  //it will give error 404 and some text ;=)
   @GET
   @Path("/{idProduct}")
   public Response getProduct(@PathParam("idProduct") int idProduct) {
@@ -38,6 +44,8 @@ public class ProductEndpoints {
     //added encryption
     json= Encryption.encryptDecryptXOR(json);
 
+
+    // return data to the user
     if (product != null){
       // Return a response with status 200 and JSON as type
       return Response.status(200).type(MediaType.TEXT_PLAIN_TYPE).entity(json).build();
@@ -48,6 +56,10 @@ public class ProductEndpoints {
   }
 
   /** @return Responses */
+
+  // This method first checks for a products in the cache, if there is no products or the products needs to be updated, it will
+  //collect from the database instead. The product gets encrypted with json and send to the user. If things fail
+  //it will give error 404 and some text ;=)
   @GET
   @Path("/")
   public Response getProducts() {
@@ -62,6 +74,7 @@ public class ProductEndpoints {
     json= Encryption.encryptDecryptXOR(json);
 
     if (products != null){
+      // just created a new cache, so setting forceUpdate to false
       this.forceUpdate = false;
       // Return a response with status 200 and JSON as type
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
@@ -73,6 +86,10 @@ public class ProductEndpoints {
 
   }
 
+
+  // This method creates a product based on the information provided from the user making it
+  // Using the controller to save the new product in the database. The product are then converted to json and send
+  // back to the user. If anything goes wrong it will return 404 and a text ;=)
   @POST
   @Path("/")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -90,7 +107,7 @@ public class ProductEndpoints {
     // Return the data to the user
     if (createdProduct != null) {
       // Return a response with status 200 and JSON as type
-      //kommenter noget her!!!!!!!!!!!!!!!
+      // just created a new cache, so setting forceUpdate to false
       this.forceUpdate = true;
 
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();

@@ -25,10 +25,6 @@ public final class Config {
   private static char[] ENC_KEY;
 
 
-
-
-
-
   public static char[] getEncKey() {return ENC_KEY;}
 
   public static long getProductTtl() {

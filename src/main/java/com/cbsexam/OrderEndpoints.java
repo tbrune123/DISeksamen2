@@ -17,21 +17,25 @@ import utils.Encryption;
 @Path("orders")
 public class OrderEndpoints {
 
-  /** Gemmer alle ordre i cache **/
+  //Savning all orders in the cache
   private static OrderCache orderCache = new OrderCache();
 
-  /** Tjekker om der er brug for en update til cache **/
+  //checking if the there is an update needed for the cache
   public static boolean forceUpdate=true;
 
   /**
    * @param idOrder
    * @return Responses
    */
+
+  // This method first checks for orders in the cache, if there is no orders or the order needs to be upated, it will
+  //collect from the database instead. The order gets encrypted with json and send to the user. If things fail
+  //it will give error 404 and some text ;=)
   @GET
   @Path("/{idOrder}")
   public Response getOrder(@PathParam("idOrder") int idOrder) {
 
-    // Call our controller-layer in order to get the order from the DB
+    // Calling the controller-layer in order to get fresh updates from the DB
     Order order = orderCache.getOrder(forceUpdate,idOrder);
 
     // TODO: Add Encryption to JSON FIX
@@ -47,15 +51,18 @@ public class OrderEndpoints {
       return Response.status(404).entity("It seems that the order-guy went home for today, no orders to be found").build();
     }
 
-
   }
 
+
+  // This method first checks for orders in the cache, if there is no orders or the order needs to be upated, it will
+  //collect from the database instead. The order gets encrypted with json and send to the user. If things fail
+  //it will give error 404 and some text ;=)
   /** @return Responses */
   @GET
   @Path("/")
   public Response getOrders() {
 
-    // Call our controller-layer in order to get the order from the DB
+    // Calling the controller-layer in order to get fresh updates from the DB
     ArrayList<Order> orders = orderCache.getOrders(forceUpdate);
 
     // TODO: Add Encryption to JSON FIX
@@ -65,7 +72,8 @@ public class OrderEndpoints {
 
 
 
-
+    // just created a new cache, so setting forceUpdate to false
+    // sending the data back to the user
     if (orders != null) {
       this.forceUpdate = false;
       // Return a response with status 200 and JSON as type
@@ -78,6 +86,10 @@ public class OrderEndpoints {
 
   }
 
+
+  // This method creates and order based on the information provided from the user making it
+  // Using the controller to save the new order in the database. The order is then converted to json and send
+  // back to the user. If anything goes wrong it will return 404 and a text ;=)
   @POST
   @Path("/")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -86,7 +98,7 @@ public class OrderEndpoints {
     // Read the json from body and transfer it to a order class
     Order newOrder = new Gson().fromJson(body, Order.class);
 
-    // Use the controller to add the user
+    // Use the controller to add the order
     Order createdOrder = OrderController.createOrder(newOrder);
 
     // Get the user back with the added ID and return it to the user
@@ -96,7 +108,7 @@ public class OrderEndpoints {
     if (createdOrder != null) {
       // Return a response with status 200 and JSON as type
 
-      this.forceUpdate = false;
+      this.forceUpdate = true;
 
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {

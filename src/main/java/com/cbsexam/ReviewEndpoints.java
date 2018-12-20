@@ -17,11 +17,13 @@ public class ReviewEndpoints {
    * @param reviewTitle
    * @return Responses
    */
+
+  // This method gets reviews from the database and can also be searched by title
   @GET
   @Path("/title/{title}")
   public Response search(@PathParam("title") String reviewTitle) {
 
-    // Call our controller-layer in order to get the order from the DB
+    // Call our controller-layer in order to get the review from the database
     ArrayList<Review> reviews = ReviewController.searchByTitle(reviewTitle);
 
     // TODO: Add Encryption to JSON FIX

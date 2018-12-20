@@ -8,46 +8,45 @@ import utils.Config;
 public class UserCache {
 
     // List of products
-  private ArrayList<User> userList;
+  private static ArrayList<User> userList;
 
     // Time cache should live
     private long lifeTimeOfCache;
 
-    // Sets when the cache has been created
-    private long created;
+    // Sets a stamp when the cache has been created
+    private static long created;
 
+    // If there is no update, it will get orders from arrayList
     public UserCache() {
         this.lifeTimeOfCache = Config.getUserTtl();
     }
 
     public ArrayList<User> getUsers(Boolean forceUpdate) {
 
-        // If we whis to clear cache, we can set force update.
-        // Otherwise we look at the age of the cache and figure out if we should update.
-        // If the list is empty we also check for new products
+        // Clear cache if we want to
+        // The method is checking if the time-stamp is out of date
+        // We will check for update if the list is empty
         if (forceUpdate
-                || ((this.created + this.lifeTimeOfCache) <= (System.currentTimeMillis()))
+                || ((this.created + this.lifeTimeOfCache) <= (System.currentTimeMillis()/100L))
                 || this.userList ==null) {
 
-            // Get products from controller, since we wish to update.
+            // Getting the products from the controller, because we want to update
             ArrayList<User> users = UserController.getUsers();
 
 
-            System.out.println("det virker");
-
-
-            // Set products for the instance and set created timestamp
+            // Setting the products for the instance and set timestamp
             this.userList = users;
             this.created = System.currentTimeMillis();
         }
 
-        // Return the documents
+        // Return the users
         return this.userList;
     }
 
     public User getUser(boolean forceUpdate, int userID) {
         User user = new User();
 
+        // ForceUpdate if the time og cachce is out or userList is empty
         if (forceUpdate
                 || ((this.created + this.lifeTimeOfCache) <= (System.currentTimeMillis())) || this.userList ==null) {
 
@@ -56,7 +55,7 @@ public class UserCache {
 
             return user;
         } else {
-            // Get user from already made arraylist by checking against ID
+            // If the cache is up to date, use  arraylist untill the correct product_ID is found
             for (User u : userList){
                 if (userID==u.getId())
                     user = u;

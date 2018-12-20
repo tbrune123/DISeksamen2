@@ -58,7 +58,7 @@ public class DatabaseController {
 
   /**
    * Do a query in the database
-   *
+
    * @return a ResultSet or Null if Empty
    */
   public ResultSet query(String sql) {
